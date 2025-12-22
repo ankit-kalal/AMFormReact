@@ -53,6 +53,12 @@ import {
   setOpenConfigurator,
 } from "context";
 
+// Auth context
+import { useAuth } from "context/AuthContext";
+
+// Protected Route component
+import ProtectedRoute from "components/ProtectedRoute";
+
 // Images
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
@@ -72,6 +78,7 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
+  const { isAuthenticated, loading } = useAuth();
 
   // Cache for the rtl
   useMemo(() => {
@@ -114,6 +121,11 @@ export default function App() {
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
 
+  // Check if route is authentication route
+  const isAuthRoute = (path) => {
+    return path && path.startsWith("/authentication");
+  };
+
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
       if (route.collapse) {
@@ -121,11 +133,24 @@ export default function App() {
       }
 
       if (route.route) {
+        // Public routes (authentication pages)
+        if (isAuthRoute(route.route)) {
+          return (
+            <Route
+              exact
+              path={route.route}
+              element={route.component}
+              key={route.key}
+            />
+          );
+        }
+        
+        // Protected routes (dashboard and other pages)
         return (
           <Route
             exact
             path={route.route}
-            element={route.component}
+            element={<ProtectedRoute>{route.component}</ProtectedRoute>}
             key={route.key}
           />
         );
@@ -183,7 +208,19 @@ export default function App() {
         {layout === "vr" && <Configurator />}
         <Routes>
           {getRoutes(routes)}
-          <Route path="*" element={<Navigate to="/dashboards/analytics" />} />
+          <Route
+            path="*"
+            element={
+              <Navigate
+                to={
+                  isAuthenticated
+                    ? "/dashboards/analytics"
+                    : "/authentication/sign-in/basic"
+                }
+                replace
+              />
+            }
+          />
         </Routes>
       </ThemeProvider>
     </CacheProvider>

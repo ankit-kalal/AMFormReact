@@ -64,6 +64,7 @@ import SignInCover from "layouts/authentication/sign-in/cover";
 import SignInIllustration from "layouts/authentication/sign-in/illustration";
 import SignUpCover from "layouts/authentication/sign-up/cover";
 import ResetCover from "layouts/authentication/reset-password/cover";
+import Logout from "pages/Logout";
 
 // Material Dashboard 3 PRO React components
 import MDAvatar from "components/MDAvatar";
@@ -96,8 +97,8 @@ const routes = [
       {
         name: "Logout",
         key: "logout",
-        route: "/authentication/sign-in/basic",
-        component: <SignInBasic />,
+        route: "/logout",
+        component: <Logout />,
       },
     ],
   },

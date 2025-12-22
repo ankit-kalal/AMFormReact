@@ -1,0 +1,58 @@
+# Project Ownership
+- The repository root is the PRIMARY and ACTIVE React application.
+- The `oldcode/` directory is REFERENCE-ONLY.
+- Never modify files inside `oldcode/`.
+
+# Development Scope
+- All new development, fixes, and refactors must be done in the root project.
+- Treat `oldcode/` strictly as a source of reference for logic patterns.
+
+# Migration Policy
+- Allowed to manually migrate from `oldcode/`:
+  - API service functions
+  - Business logic
+  - Authentication logic
+  - Custom hooks
+  - Utility/helper functions
+- Migration must be selective and manual.
+
+# Forbidden Copying
+- Do NOT copy entire folders from `oldcode/`.
+- Do NOT copy:
+  - App.jsx / main.jsx / index.js
+  - Routing configuration
+  - Layout components
+  - Theme or global CSS files
+  - Build configs or scripts
+  - Assets (icons, images, fonts)
+
+# Routing & Layout
+- Preserve the template’s routing and layout structure.
+- Adapt old pages to the template layout instead of altering layout code.
+- Follow the template navigation and sidebar patterns.
+
+# Styling Rules
+- Use only the styling system provided by the Material Dashboard Pro React template.
+- Do not import CSS, SCSS, or theme files from `oldcode/`.
+- Do not mix UI frameworks.
+
+# Dependency Rules
+- Install dependencies only when required by migrated logic.
+- Never copy `package.json` entries wholesale from `oldcode/`.
+- Prefer existing dependencies already used by the template.
+
+# Environment Variables
+- Follow the template’s environment variable format.
+- Do not reuse old environment variable names without verification.
+
+# Testing & Build
+- Test functionality page-by-page after each migration.
+- Ensure `npm run build` succeeds before committing changes.
+
+# Deployment
+- Build and deploy ONLY the root project.
+- The `oldcode/` directory must never be included in deployment output.
+
+# Safety Rules
+- If unsure about copying code, rewrite or refactor instead.
+- Keep migrations incremental and reversible.
