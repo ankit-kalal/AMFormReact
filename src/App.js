@@ -128,10 +128,12 @@ export default function App() {
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
-      if (route.collapse) {
+      // Handle routes with collapse (nested routes)
+      if (route.collapse && Array.isArray(route.collapse)) {
         return getRoutes(route.collapse);
       }
 
+      // Handle routes with route property (both nested and top-level)
       if (route.route) {
         // Public routes (authentication pages)
         if (isAuthRoute(route.route)) {

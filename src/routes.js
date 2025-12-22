@@ -65,6 +65,10 @@ import SignInIllustration from "layouts/authentication/sign-in/illustration";
 import SignUpCover from "layouts/authentication/sign-up/cover";
 import ResetCover from "layouts/authentication/reset-password/cover";
 import Logout from "pages/Logout";
+import FormDefinition from "pages/FormDefinition";
+import Users from "pages/Users";
+import Groups from "pages/Groups";
+import Apps from "pages/Apps";
 
 // Material Dashboard 3 PRO React components
 import MDAvatar from "components/MDAvatar";
@@ -122,6 +126,42 @@ const routes = [
         component: <Sales />,
       },
     ],
+  },
+  {
+    type: "collapse",
+    name: "Form Definition",
+    key: "form-definition",
+    icon: <Icon fontSize="small">description</Icon>,
+    route: "/form-definition",
+    component: <FormDefinition />,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Users",
+    key: "users",
+    icon: <Icon fontSize="small">people</Icon>,
+    route: "/users",
+    component: <Users />,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Groups",
+    key: "groups",
+    icon: <Icon fontSize="small">group</Icon>,
+    route: "/groups",
+    component: <Groups />,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
+    name: "Apps",
+    key: "apps",
+    icon: <Icon fontSize="small">apps</Icon>,
+    route: "/apps",
+    component: <Apps />,
+    noCollapse: true,
   },
   { type: "title", title: "Pages", key: "title-pages" },
   {
