@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Card from "@mui/material/Card";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -5,6 +6,12 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
+
+// Auth Context
+import { useAuth } from "context/AuthContext";
+
+// API Service
+import { getUsers } from "api/services/usersService";
 
 // Dummy data for users
 const usersData = {
@@ -76,6 +83,26 @@ const usersData = {
 };
 
 function Users() {
+  const { session } = useAuth();
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      if (session) {
+        try {
+          const result = await getUsers(session);
+          console.log("📊 Users API Response:", result);
+          console.log("📋 Users Data:", result.data);
+        } catch (error) {
+          console.error("❌ Error fetching users:", error);
+        }
+      } else {
+        console.warn("⚠️ No session available for API call");
+      }
+    };
+
+    fetchUsers();
+  }, [session]);
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
