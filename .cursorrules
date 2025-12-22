@@ -56,3 +56,69 @@
 # Safety Rules
 - If unsure about copying code, rewrite or refactor instead.
 - Keep migrations incremental and reversible.
+
+
+
+# Webix Integration Rules
+- Webix is used strictly for UI rendering and record display.
+- All Webix-related files must live inside the `webix_code/` directory.
+- Do NOT move Webix files into the React `src/` directory.
+
+# Responsibility Separation
+- React controls:
+  - Routing
+  - Data fetching
+  - Authentication
+  - State management
+- Webix controls:
+  - Data tables
+  - Forms
+  - Trees
+  - Charts
+  - Layouts for displaying records only
+
+# Data Flow Rules
+- Webix must NEVER directly call APIs.
+- All API calls must be done in React services or shared logic.
+- Data must be passed to Webix via:
+  - `data` property
+  - `parse()`
+  - `clearAll()` + `parse()`
+  - `load()` only when triggered by React
+
+# Webix Lifecycle Rules
+- Webix UI must be initialized only after React component mount.
+- Webix UI must be destroyed on React component unmount.
+- Prevent multiple Webix instances for the same container.
+
+# Webix Code Restrictions
+- No business logic inside Webix config files.
+- No authentication logic inside Webix code.
+- No environment variable usage inside Webix configs.
+- No direct DOM manipulation outside Webix APIs.
+
+# Styling Rules (Webix)
+- Use the Webix theme styles provided with the purchased theme.
+- Do NOT override Webix CSS globally from React.
+- Do NOT mix Webix UI and Material UI components on the same screen.
+
+# Migration Usage
+- `oldcode/` may be referenced to understand:
+  - API response structure
+  - Data transformation logic
+- UI from `oldcode/` must NOT be recreated inside Webix unless explicitly required.
+
+# Performance & Data Volume
+- Webix components must support large datasets efficiently.
+- Prefer paging, lazy loading, or server-side filtering when available.
+- Avoid rendering large datasets directly without optimization.
+
+# Deployment Safety
+- Ensure `webix_code/` is bundled only as UI assets.
+- Verify Webix licenses are not exposed in client-side code.
+- Confirm Webix UI works in production build mode.
+
+# Safety Rules (Webix)
+- If Webix requires logic, move that logic to React services.
+- Keep Webix as a pure view layer.
+- Any uncertainty defaults to React-side implementation.

@@ -1,11 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import DataTable from "examples/Tables/DataTable";
+import WebixDataTable from "components/WebixDataTable";
 
 // Auth Context
 import { useAuth } from "context/AuthContext";
@@ -13,90 +13,34 @@ import { useAuth } from "context/AuthContext";
 // API Service
 import { getUsers } from "api/services/usersService";
 
-// Dummy data for users
-const usersData = {
-  columns: [
-    { Header: "Name", accessor: "name", width: "25%" },
-    { Header: "Email", accessor: "email", width: "30%" },
-    { Header: "Role", accessor: "role", width: "15%" },
-    { Header: "Status", accessor: "status", width: "15%" },
-    { Header: "Last Login", accessor: "lastLogin", width: "15%" },
-  ],
-  rows: [
-    {
-      name: "John Doe",
-      email: "john.doe@example.com",
-      role: "Admin",
-      status: "Active",
-      lastLogin: "2024-12-22",
-    },
-    {
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      role: "User",
-      status: "Active",
-      lastLogin: "2024-12-21",
-    },
-    {
-      name: "Bob Johnson",
-      email: "bob.johnson@example.com",
-      role: "User",
-      status: "Active",
-      lastLogin: "2024-12-20",
-    },
-    {
-      name: "Alice Williams",
-      email: "alice.williams@example.com",
-      role: "Manager",
-      status: "Active",
-      lastLogin: "2024-12-19",
-    },
-    {
-      name: "Charlie Brown",
-      email: "charlie.brown@example.com",
-      role: "User",
-      status: "Inactive",
-      lastLogin: "2024-11-15",
-    },
-    {
-      name: "Diana Prince",
-      email: "diana.prince@example.com",
-      role: "Admin",
-      status: "Active",
-      lastLogin: "2024-12-22",
-    },
-    {
-      name: "Edward Norton",
-      email: "edward.norton@example.com",
-      role: "User",
-      status: "Active",
-      lastLogin: "2024-12-18",
-    },
-    {
-      name: "Fiona Apple",
-      email: "fiona.apple@example.com",
-      role: "User",
-      status: "Active",
-      lastLogin: "2024-12-17",
-    },
-  ],
-};
+// Webix Grid Config
+import { getUsersGridConfig } from "webix/usersGrid";
 
 function Users() {
   const { session } = useAuth();
+  const [usersData, setUsersData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUsers = async () => {
       if (session) {
         try {
+          setLoading(true);
           const result = await getUsers(session);
           console.log("📊 Users API Response:", result);
           console.log("📋 Users Data:", result.data);
+          
+          if (result.success && result.data) {
+            setUsersData(result.data);
+          }
         } catch (error) {
           console.error("❌ Error fetching users:", error);
+        } finally {
+          setLoading(false);
         }
       } else {
         console.warn("⚠️ No session available for API call");
+        setLoading(false);
       }
     };
 
@@ -116,7 +60,19 @@ function Users() {
               Manage system users and their permissions
             </MDTypography>
           </MDBox>
-          <DataTable table={usersData} canSearch />
+          <MDBox p={3} sx={{ height: "600px" }}>
+            {loading ? (
+              <MDBox display="flex" justifyContent="center" alignItems="center" height="100%">
+                <MDTypography>Loading users...</MDTypography>
+              </MDBox>
+            ) : (
+              <WebixDataTable
+                config={getUsersGridConfig()}
+                data={usersData}
+                containerId="users-webix-container"
+              />
+            )}
+          </MDBox>
         </Card>
       </MDBox>
       <Footer />

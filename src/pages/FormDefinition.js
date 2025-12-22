@@ -1,74 +1,52 @@
+import { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import DataTable from "examples/Tables/DataTable";
+import WebixDataTable from "components/WebixDataTable";
 
-// Dummy data for form definitions
-const formDefinitionData = {
-  columns: [
-    { Header: "Form Name", accessor: "formName", width: "25%" },
-    { Header: "Type", accessor: "type", width: "15%" },
-    { Header: "Status", accessor: "status", width: "15%" },
-    { Header: "Created Date", accessor: "createdDate", width: "20%" },
-    { Header: "Last Modified", accessor: "lastModified", width: "20%" },
-    { Header: "Actions", accessor: "actions", width: "5%" },
-  ],
-  rows: [
-    {
-      formName: "Customer Feedback Form",
-      type: "Survey",
-      status: "Active",
-      createdDate: "2024-01-15",
-      lastModified: "2024-12-20",
-      actions: "View",
-    },
-    {
-      formName: "Employee Onboarding",
-      type: "Registration",
-      status: "Active",
-      createdDate: "2024-02-10",
-      lastModified: "2024-12-18",
-      actions: "View",
-    },
-    {
-      formName: "Product Order Form",
-      type: "Order",
-      status: "Draft",
-      createdDate: "2024-11-05",
-      lastModified: "2024-12-15",
-      actions: "View",
-    },
-    {
-      formName: "Event Registration",
-      type: "Registration",
-      status: "Active",
-      createdDate: "2024-03-20",
-      lastModified: "2024-12-10",
-      actions: "View",
-    },
-    {
-      formName: "Support Ticket Form",
-      type: "Support",
-      status: "Active",
-      createdDate: "2024-01-08",
-      lastModified: "2024-12-05",
-      actions: "View",
-    },
-    {
-      formName: "Application Form",
-      type: "Application",
-      status: "Archived",
-      createdDate: "2023-12-01",
-      lastModified: "2024-11-28",
-      actions: "View",
-    },
-  ],
-};
+// Auth Context
+import { useAuth } from "context/AuthContext";
+
+// API Service
+import { getForms } from "api/services/formsService";
+
+// Webix Grid Config
+import { getFormsGridConfig } from "webix/formsGrid";
 
 function FormDefinition() {
+  const { session } = useAuth();
+  const [formsData, setFormsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchForms = async () => {
+      if (session) {
+        try {
+          setLoading(true);
+          const result = await getForms(session);
+          console.log("📊 Forms API Response:", result);
+          console.log("📋 Forms Data:", result.data);
+          
+          if (result.success && result.data) {
+            setFormsData(result.data);
+          }
+        } catch (error) {
+          console.error("❌ Error fetching forms:", error);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        console.warn("⚠️ No session available for API call");
+        setLoading(false);
+      }
+    };
+
+    fetchForms();
+  }, [session]);
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -82,7 +60,19 @@ function FormDefinition() {
               Manage and configure form definitions
             </MDTypography>
           </MDBox>
-          <DataTable table={formDefinitionData} canSearch />
+          <MDBox p={3} sx={{ height: "600px" }}>
+            {loading ? (
+              <MDBox display="flex" justifyContent="center" alignItems="center" height="100%">
+                <MDTypography>Loading forms...</MDTypography>
+              </MDBox>
+            ) : (
+              <WebixDataTable
+                config={getFormsGridConfig()}
+                data={formsData}
+                containerId="forms-webix-container"
+              />
+            )}
+          </MDBox>
         </Card>
       </MDBox>
       <Footer />

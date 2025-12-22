@@ -1,74 +1,52 @@
+import { useEffect, useState } from "react";
 import Card from "@mui/material/Card";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import DataTable from "examples/Tables/DataTable";
+import WebixDataTable from "components/WebixDataTable";
 
-// Dummy data for groups
-const groupsData = {
-  columns: [
-    { Header: "Group Name", accessor: "groupName", width: "25%" },
-    { Header: "Description", accessor: "description", width: "35%" },
-    { Header: "Members", accessor: "members", width: "15%" },
-    { Header: "Status", accessor: "status", width: "15%" },
-    { Header: "Created Date", accessor: "createdDate", width: "10%" },
-  ],
-  rows: [
-    {
-      groupName: "Administrators",
-      description: "Full system access and management",
-      members: 3,
-      status: "Active",
-      createdDate: "2024-01-01",
-    },
-    {
-      groupName: "Managers",
-      description: "Department managers with elevated permissions",
-      members: 8,
-      status: "Active",
-      createdDate: "2024-01-05",
-    },
-    {
-      groupName: "Developers",
-      description: "Development team members",
-      members: 15,
-      status: "Active",
-      createdDate: "2024-01-10",
-    },
-    {
-      groupName: "Support Team",
-      description: "Customer support representatives",
-      members: 12,
-      status: "Active",
-      createdDate: "2024-02-01",
-    },
-    {
-      groupName: "Sales Team",
-      description: "Sales and marketing personnel",
-      members: 10,
-      status: "Active",
-      createdDate: "2024-02-15",
-    },
-    {
-      groupName: "Guests",
-      description: "Limited access users",
-      members: 25,
-      status: "Active",
-      createdDate: "2024-03-01",
-    },
-    {
-      groupName: "Archived Users",
-      description: "Inactive user group",
-      members: 5,
-      status: "Inactive",
-      createdDate: "2023-12-01",
-    },
-  ],
-};
+// Auth Context
+import { useAuth } from "context/AuthContext";
+
+// API Service
+import { getGroups } from "api/services/groupsService";
+
+// Webix Grid Config
+import { getGroupsGridConfig } from "webix/groupsGrid";
 
 function Groups() {
+  const { session } = useAuth();
+  const [groupsData, setGroupsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      if (session) {
+        try {
+          setLoading(true);
+          const result = await getGroups(session);
+          console.log("📊 Groups API Response:", result);
+          console.log("📋 Groups Data:", result.data);
+          
+          if (result.success && result.data) {
+            setGroupsData(result.data);
+          }
+        } catch (error) {
+          console.error("❌ Error fetching groups:", error);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        console.warn("⚠️ No session available for API call");
+        setLoading(false);
+      }
+    };
+
+    fetchGroups();
+  }, [session]);
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -82,7 +60,19 @@ function Groups() {
               Manage user groups and their permissions
             </MDTypography>
           </MDBox>
-          <DataTable table={groupsData} canSearch />
+          <MDBox p={3} sx={{ height: "600px" }}>
+            {loading ? (
+              <MDBox display="flex" justifyContent="center" alignItems="center" height="100%">
+                <MDTypography>Loading groups...</MDTypography>
+              </MDBox>
+            ) : (
+              <WebixDataTable
+                config={getGroupsGridConfig()}
+                data={groupsData}
+                containerId="groups-webix-container"
+              />
+            )}
+          </MDBox>
         </Card>
       </MDBox>
       <Footer />
