@@ -61,8 +61,9 @@
 
 # Webix Integration Rules
 - Webix is used strictly for UI rendering and record display.
-- All Webix-related files must live inside the `webix_code/` directory.
-- Do NOT move Webix files into the React `src/` directory.
+- Webix library files (webix.min.js, webix.min.css) must stay in `webix_code/codebase/` or `public/webix/`.
+- Webix configuration files (grid configs, component configs) can be in `src/webix/` for React imports.
+- Webix config files in `src/webix/` must contain ONLY pure configuration objects, no business logic.
 
 # Responsibility Separation
 - React controls:
@@ -122,3 +123,9 @@
 - If Webix requires logic, move that logic to React services.
 - Keep Webix as a pure view layer.
 - Any uncertainty defaults to React-side implementation.
+
+
+
+# Build Command Rule
+- Do NOT run build commands automatically unless explicitly requested by the user.
+- Only run build commands when the user specifically asks for it.

@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-import Card from "@mui/material/Card";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Footer from "examples/Footer";
 import WebixDataTable from "components/WebixDataTable";
 
 // Auth Context
@@ -47,35 +45,57 @@ function Apps() {
     fetchApps();
   }, [session]);
 
+  const handleAction = (action, rowData) => {
+    const appName = rowData.app_name || rowData.name || 'App';
+    const appId = rowData.id || 'N/A';
+    
+    console.log(`Action: ${action}`, rowData);
+    
+    if (action === 'view') {
+      alert(`View action clicked for app: ${appName} (ID: ${appId})`);
+    } else if (action === 'edit') {
+      alert(`Edit action clicked for app: ${appName} (ID: ${appId})`);
+    } else if (action === 'delete') {
+      if (window.confirm(`Are you sure you want to delete app: ${appName}?`)) {
+        alert(`Delete action clicked for app: ${appName} (ID: ${appId})`);
+      }
+    }
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox pt={6} pb={3}>
-        <Card>
-          <MDBox p={3} lineHeight={1}>
-            <MDTypography variant="h5" fontWeight="medium">
-              Apps
-            </MDTypography>
-            <MDTypography variant="button" color="text">
-              Manage applications and integrations
-            </MDTypography>
-          </MDBox>
-          <MDBox p={3} sx={{ height: "600px" }}>
-            {loading ? (
-              <MDBox display="flex" justifyContent="center" alignItems="center" height="100%">
-                <MDTypography>Loading apps...</MDTypography>
-              </MDBox>
-            ) : (
-              <WebixDataTable
-                config={getAppsGridConfig()}
-                data={appsData}
-                containerId="apps-webix-container"
-              />
-            )}
-          </MDBox>
-        </Card>
+      <MDBox
+        sx={{
+          height: "calc(100vh - 120px)",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+        }}
+      >
+        <MDBox mb={2} sx={{ flexShrink: 0 }}>
+          <MDTypography variant="h5" fontWeight="medium">
+            Apps
+          </MDTypography>
+          <MDTypography variant="button" color="text">
+            Manage applications and integrations
+          </MDTypography>
+        </MDBox>
+        <MDBox sx={{ flex: 1, overflow: "hidden", minHeight: 0 }}>
+          {loading ? (
+            <MDBox display="flex" justifyContent="center" alignItems="center" height="100%">
+              <MDTypography>Loading apps...</MDTypography>
+            </MDBox>
+          ) : (
+             <WebixDataTable
+               config={getAppsGridConfig()}
+               data={appsData}
+               containerId="apps-webix-container"
+               onAction={handleAction}
+             />
+          )}
+        </MDBox>
       </MDBox>
-      <Footer />
     </DashboardLayout>
   );
 }

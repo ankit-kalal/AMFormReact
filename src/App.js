@@ -18,6 +18,9 @@ import { useState, useEffect, useMemo } from "react";
 // react-router components
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
+// Webix Custom Styles
+import "styles/webix-custom.css";
+
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";

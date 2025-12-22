@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
-import Card from "@mui/material/Card";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Footer from "examples/Footer";
 import WebixDataTable from "components/WebixDataTable";
 
 // Auth Context
@@ -47,35 +45,57 @@ function Groups() {
     fetchGroups();
   }, [session]);
 
+  const handleAction = (action, rowData) => {
+    const groupName = rowData.name || 'Group';
+    const groupId = rowData.id || 'N/A';
+    
+    console.log(`Action: ${action}`, rowData);
+    
+    if (action === 'view') {
+      alert(`View action clicked for group: ${groupName} (ID: ${groupId})`);
+    } else if (action === 'edit') {
+      alert(`Edit action clicked for group: ${groupName} (ID: ${groupId})`);
+    } else if (action === 'delete') {
+      if (window.confirm(`Are you sure you want to delete group: ${groupName}?`)) {
+        alert(`Delete action clicked for group: ${groupName} (ID: ${groupId})`);
+      }
+    }
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox pt={6} pb={3}>
-        <Card>
-          <MDBox p={3} lineHeight={1}>
-            <MDTypography variant="h5" fontWeight="medium">
-              Groups
-            </MDTypography>
-            <MDTypography variant="button" color="text">
-              Manage user groups and their permissions
-            </MDTypography>
-          </MDBox>
-          <MDBox p={3} sx={{ height: "600px" }}>
-            {loading ? (
-              <MDBox display="flex" justifyContent="center" alignItems="center" height="100%">
-                <MDTypography>Loading groups...</MDTypography>
-              </MDBox>
-            ) : (
-              <WebixDataTable
-                config={getGroupsGridConfig()}
-                data={groupsData}
-                containerId="groups-webix-container"
-              />
-            )}
-          </MDBox>
-        </Card>
+      <MDBox
+        sx={{
+          height: "calc(100vh - 120px)",
+          display: "flex",
+          flexDirection: "column",
+          overflow: "hidden",
+        }}
+      >
+        <MDBox mb={2} sx={{ flexShrink: 0 }}>
+          <MDTypography variant="h5" fontWeight="medium">
+            Groups
+          </MDTypography>
+          <MDTypography variant="button" color="text">
+            Manage user groups and their permissions
+          </MDTypography>
+        </MDBox>
+        <MDBox sx={{ flex: 1, overflow: "hidden", minHeight: 0 }}>
+          {loading ? (
+            <MDBox display="flex" justifyContent="center" alignItems="center" height="100%">
+              <MDTypography>Loading groups...</MDTypography>
+            </MDBox>
+          ) : (
+             <WebixDataTable
+               config={getGroupsGridConfig()}
+               data={groupsData}
+               containerId="groups-webix-container"
+               onAction={handleAction}
+             />
+          )}
+        </MDBox>
       </MDBox>
-      <Footer />
     </DashboardLayout>
   );
 }
