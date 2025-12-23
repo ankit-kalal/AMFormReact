@@ -18,8 +18,8 @@ import { useState, useEffect, useMemo } from "react";
 // react-router components
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
-// Webix Custom Styles
-import "styles/webix-custom.css";
+// Webix Custom Styles - COMMENTED OUT: Using only Webix's default CSS
+// import "styles/webix-custom.css";
 
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
@@ -140,11 +140,11 @@ export default function App() {
       if (route.route) {
         // Public routes (authentication pages)
         if (isAuthRoute(route.route)) {
-          return (
-            <Route
-              exact
-              path={route.route}
-              element={route.component}
+        return (
+          <Route
+            exact
+            path={route.route}
+            element={route.component}
               key={route.key}
             />
           );

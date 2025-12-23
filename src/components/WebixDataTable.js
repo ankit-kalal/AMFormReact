@@ -21,6 +21,7 @@ function WebixDataTable({ config, data, containerId, onAction }) {
       const webixConfig = {
         ...config,
         container: containerRef.current,
+        data: data || [] // Initialize with data if available, or empty array
       };
 
       webixInstanceRef.current = window.webix.ui(webixConfig);
