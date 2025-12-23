@@ -104,6 +104,41 @@ function WebixDataTable({ config, data, containerId, onAction }) {
     }
   }, [data]);
 
+  // Handle resize to ensure grid fills container width
+  useEffect(() => {
+    if (!webixInstanceRef.current || !containerRef.current) {
+      return;
+    }
+
+    const resizeHandler = () => {
+      if (webixInstanceRef.current) {
+        // Force Webix to recalculate size
+        webixInstanceRef.current.resize();
+      }
+    };
+
+    // Initial resize after a short delay to ensure DOM is ready
+    const timeoutId = setTimeout(resizeHandler, 100);
+
+    // Listen for window resize
+    window.addEventListener('resize', resizeHandler);
+
+    // Use ResizeObserver for container size changes
+    let resizeObserver = null;
+    if (containerRef.current.parentElement) {
+      resizeObserver = new ResizeObserver(resizeHandler);
+      resizeObserver.observe(containerRef.current.parentElement);
+    }
+
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('resize', resizeHandler);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+    };
+  }, [data]); // Re-run when data changes to ensure proper sizing
+
   return (
     <div
       ref={containerRef}
@@ -112,6 +147,8 @@ function WebixDataTable({ config, data, containerId, onAction }) {
         width: "100%",
         height: "100%",
         minHeight: "400px",
+        display: "block",
+        position: "relative",
       }}
     />
   );

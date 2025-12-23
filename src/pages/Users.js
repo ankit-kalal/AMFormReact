@@ -82,18 +82,29 @@ function Users() {
           </MDTypography>
         </MDBox>
         <MDBox sx={{ flex: 1, overflow: "hidden", minHeight: 0 }}>
-          {loading ? (
-            <MDBox display="flex" justifyContent="center" alignItems="center" height="100%">
-              <MDTypography>Loading users...</MDTypography>
-            </MDBox>
-          ) : (
-            <WebixDataTable
-              config={getUsersGridConfig()}
-              data={usersData}
-              containerId="users-webix-container"
-              onAction={handleAction}
-            />
-          )}
+          <MDBox
+            sx={{
+              backgroundColor: "white",
+              borderRadius: 2,
+              border: "1px solid #e5e5e5",
+              boxShadow: "0 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1), 0 0.125rem 0.25rem -0.0625rem rgba(0, 0, 0, 0.06)",
+              height: "100%",
+              overflow: "hidden",
+            }}
+          >
+            {loading ? (
+              <MDBox display="flex" justifyContent="center" alignItems="center" height="100%">
+                <MDTypography>Loading users...</MDTypography>
+              </MDBox>
+            ) : (
+              <WebixDataTable
+                config={getUsersGridConfig()}
+                data={usersData}
+                containerId="users-webix-container"
+                onAction={handleAction}
+              />
+            )}
+          </MDBox>
         </MDBox>
       </MDBox>
     </DashboardLayout>

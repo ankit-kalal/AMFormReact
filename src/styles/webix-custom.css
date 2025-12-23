@@ -24,6 +24,33 @@
   border-radius: 8px !important;
   overflow: hidden !important;
   font-family: var(--md-font-family) !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ===== Webix Container Styling ===== */
+[id*="-webix-container"] {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+}
+
+/* ===== Webix View Styling ===== */
+.webix_view {
+  width: 100% !important;
+}
+
+/* ===== Webix Layout Styling ===== */
+.webix_layout_line,
+.webix_layout_clean {
+  width: 100% !important;
+}
+
+/* ===== Webix DataTable Container ===== */
+.webix_datatable .webix_ss_header,
+.webix_datatable .webix_ss_vscroll,
+.webix_datatable .webix_ss_body {
+  width: 100% !important;
 }
 
 /* ===== Header Styling ===== */
