@@ -129,3 +129,7 @@
 # Build Command Rule
 - Do NOT run build commands automatically unless explicitly requested by the user.
 - Only run build commands when the user specifically asks for it.
+
+
+
+dont write readme .md file

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { authService } from '../services/authService';
 
 const AuthContext = createContext();
@@ -20,6 +20,7 @@ export const AuthProvider = ({ children }) => {
   const [isCheckingRole, setIsCheckingRole] = useState(false);
   const [hasCheckedRole, setHasCheckedRole] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const hasInitialized = useRef(false);
 
   useEffect(() => {
@@ -47,7 +48,10 @@ export const AuthProvider = ({ children }) => {
           setHasCheckedRole(true);
           
           // Navigate based on user role if authenticated and only on root/login paths
-          const currentPath = window.location.pathname;
+          // Use React Router's location.pathname which works correctly with HashRouter
+          const currentPath = location.pathname;
+          
+          // Only redirect if we're actually on a login/root page, not on any other route
           if (currentPath === '/' || currentPath === '/login' || currentPath === '/authentication/sign-in/basic') {
             const redirectPath = userRole === 'admin' ? '/dashboards/analytics' : '/dashboards/analytics';
             console.log(`🔄 Redirecting ${userRole} to ${redirectPath}`);
@@ -83,7 +87,9 @@ export const AuthProvider = ({ children }) => {
         
         // Only navigate on SIGNED_IN event, not on TOKEN_REFRESHED or other events
         if (event === 'SIGNED_IN') {
-          const currentPath = window.location.pathname;
+          // Use React Router's location.pathname which works correctly with HashRouter
+          const currentPath = location.pathname;
+          
           // Only redirect if on root or login page, not if already on a valid route
           if (currentPath === '/' || currentPath === '/login' || currentPath === '/authentication/sign-in/basic') {
             const redirectPath = userRole === 'admin' ? '/dashboards/analytics' : '/dashboards/analytics';
@@ -104,7 +110,7 @@ export const AuthProvider = ({ children }) => {
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, location.pathname]);
 
   const signUp = async (email, password) => {
     const { data, error } = await authService.signUp(email, password);
