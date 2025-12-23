@@ -1,6 +1,6 @@
 /* Custom Webix Theme - Matching Material Dashboard Pro React */
 
-/* ===== Color Variables ===== */
+/* ===== Color Variables - Matching Material Dashboard Pro React ===== */
 :root {
   --md-primary: #e91e63;
   --md-primary-focus: #e91e63;
@@ -9,17 +9,21 @@
   --md-error: #F44335;
   --md-secondary: #7b809a;
   --md-background: #f5f5f5;
+  --md-light: #f0f2f5;
   --md-text: #737373;
   --md-white: #ffffff;
-  --md-border: #e5e5e5;
+  --md-border: #d4d4d4;
+  --md-border-light: #e5e5e5;
+  --md-font-family: "Inter", "Helvetica", "Arial", sans-serif;
 }
 
 /* ===== Grid Base Styling ===== */
 .webix_datatable {
   background-color: var(--md-white) !important;
-  border: 1px solid var(--md-border) !important;
-  border-radius: 8px;
-  overflow: hidden;
+  border: 1px solid var(--md-border-light) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  font-family: var(--md-font-family) !important;
 }
 
 /* ===== Header Styling ===== */
@@ -28,9 +32,10 @@
   color: var(--md-text) !important;
   font-weight: 600 !important;
   font-size: 12px !important;
+  font-family: var(--md-font-family) !important;
   text-transform: uppercase !important;
   letter-spacing: 0.5px !important;
-  border-bottom: 2px solid var(--md-border) !important;
+  border-bottom: 2px solid var(--md-border-light) !important;
   padding: 16px !important;
   height: 48px !important;
 }
@@ -40,8 +45,10 @@
   background-color: var(--md-white) !important;
   color: var(--md-text) !important;
   padding: 16px !important;
-  border-bottom: 1px solid #f0f0f0 !important;
+  border-bottom: 1px solid var(--md-border-light) !important;
   font-size: 14px !important;
+  font-family: var(--md-font-family) !important;
+  font-weight: 400 !important;
 }
 
 /* ===== Action Columns Alignment ===== */
@@ -53,7 +60,7 @@
 
 /* ===== Row Hover Effect ===== */
 .webix_row_hover .webix_cell {
-  background-color: var(--md-background) !important;
+  background-color: var(--md-light) !important;
   transition: background-color 0.2s ease !important;
 }
 
@@ -89,7 +96,7 @@
   text-transform: uppercase !important;
   letter-spacing: 0.5px !important;
   color: #737373 !important;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+  font-family: var(--md-font-family) !important;
 }
 
 .webix-action-btn-style1.viewbtn {
@@ -202,7 +209,7 @@
   text-transform: uppercase !important;
   letter-spacing: 0.8px !important;
   color: #ffffff !important;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+  font-family: var(--md-font-family) !important;
 }
 
 .webix-action-btn-style3.viewbtn {
@@ -252,7 +259,7 @@
   text-transform: uppercase !important;
   letter-spacing: 0.8px !important;
   background-color: #ffffff !important;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+  font-family: var(--md-font-family) !important;
 }
 
 .webix-action-btn-style3a.viewbtn {
@@ -307,7 +314,7 @@
   font-weight: 600 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.8px !important;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+  font-family: var(--md-font-family) !important;
 }
 
 .webix-action-btn-style3b.viewbtn {
@@ -362,7 +369,7 @@
   font-weight: 600 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.8px !important;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+  font-family: var(--md-font-family) !important;
 }
 
 .webix-action-btn-style3d.viewbtn {
@@ -423,7 +430,7 @@
   font-weight: 600 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.8px !important;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+  font-family: var(--md-font-family) !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) !important;
 }
 
@@ -479,7 +486,7 @@
   font-weight: 600 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.8px !important;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+  font-family: var(--md-font-family) !important;
   background-color: #ffffff !important;
 }
 
@@ -529,7 +536,7 @@
   font-weight: 600 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.8px !important;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+  font-family: var(--md-font-family) !important;
   background-color: #ffffff !important;
 }
 
@@ -585,8 +592,8 @@
   font-weight: 600 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.8px !important;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
-  background-color: #ffffff !important;
+  font-family: var(--md-font-family) !important;
+  background-color: var(--md-white) !important;
   text-decoration: none !important;
 }
 
@@ -642,7 +649,7 @@
   font-weight: 600 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.8px !important;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+  font-family: var(--md-font-family) !important;
   background-color: #ffffff !important;
 }
 
@@ -696,7 +703,7 @@
   text-transform: uppercase !important;
   letter-spacing: 0.8px !important;
   color: #ffffff !important;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+  font-family: var(--md-font-family) !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15) !important;
 }
 
@@ -742,7 +749,7 @@
   text-transform: uppercase !important;
   letter-spacing: 0.5px !important;
   color: #ffffff !important;
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+  font-family: var(--md-font-family) !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) !important;
 }
 
