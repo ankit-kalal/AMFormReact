@@ -11,7 +11,7 @@ export const getGroupsGridConfig = () => {
       {
         id: "view_action",
         header: "View",
-        width: 85,
+        width: 50,
         sort: false,
         template: function(obj, common, column) {
           const rowId = obj.id || obj.$id || common.$id || '';
@@ -21,7 +21,7 @@ export const getGroupsGridConfig = () => {
       {
         id: "edit_action",
         header: "Edit",
-        width: 85,
+        width: 50,
         sort: false,
         template: function(obj, common, column) {
           const rowId = obj.id || obj.$id || common.$id || '';
@@ -31,7 +31,7 @@ export const getGroupsGridConfig = () => {
       {
         id: "delete_action",
         header: "Delete",
-        width: 85,
+        width: 60,
         sort: false,
         template: function(obj, common, column) {
           const rowId = obj.id || obj.$id || common.$id || '';
@@ -40,6 +40,7 @@ export const getGroupsGridConfig = () => {
       },
       { 
         id: "name", 
+        width: 200,
         header: [{ 
           text: "Group Name", 
           content: "excelFilter", 
@@ -53,6 +54,7 @@ export const getGroupsGridConfig = () => {
       },
       { 
         id: "description", 
+       
         header: [{ 
           text: "Description", 
           content: "excelFilter", 

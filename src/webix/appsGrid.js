@@ -11,7 +11,7 @@ export const getAppsGridConfig = () => {
       {
         id: "view_action",
         header: "View",
-        width: 85,
+        width: 50,
         sort: false,
         template: function(obj, common, column) {
           const rowId = obj.id || obj.$id || common.$id || '';
@@ -21,7 +21,7 @@ export const getAppsGridConfig = () => {
       {
         id: "edit_action",
         header: "Edit",
-        width: 85,
+        width: 50,
         sort: false,
         template: function(obj, common, column) {
           const rowId = obj.id || obj.$id || common.$id || '';
@@ -31,7 +31,7 @@ export const getAppsGridConfig = () => {
       {
         id: "delete_action",
         header: "Delete",
-        width: 85,
+        width: 60,
         sort: false,
         template: function(obj, common, column) {
           const rowId = obj.id || obj.$id || common.$id || '';
@@ -40,6 +40,7 @@ export const getAppsGridConfig = () => {
       },
       { 
         id: "app_name", 
+        width: 200,
         header: [{ 
           text: "App Name", 
           content: "excelFilter", 
@@ -52,6 +53,7 @@ export const getAppsGridConfig = () => {
       },
       { 
         id: "description", 
+        width: 200,
         header: [{ 
           text: "Description", 
           content: "excelFilter", 

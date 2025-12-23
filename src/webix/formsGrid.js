@@ -11,7 +11,7 @@ export const getFormsGridConfig = () => {
       {
         id: "view_action",
         header: "View",
-        width: 85,
+        width: 50,
         sort: false,
         template: function(obj, common, column) {
           const rowId = obj.id || obj.$id || common.$id || '';
@@ -21,7 +21,7 @@ export const getFormsGridConfig = () => {
       {
         id: "edit_action",
         header: "Edit",
-        width: 85,
+        width: 50,
         sort: false,
         template: function(obj, common, column) {
           const rowId = obj.id || obj.$id || common.$id || '';
@@ -31,7 +31,7 @@ export const getFormsGridConfig = () => {
       {
         id: "delete_action",
         header: "Delete",
-        width: 85,
+        width: 60,
         sort: false,
         template: function(obj, common, column) {
           const rowId = obj.id || obj.$id || common.$id || '';
@@ -40,6 +40,7 @@ export const getFormsGridConfig = () => {
       },
       { 
         id: "name", 
+        width: 200,
         header: [{ 
           text: "Form Name", 
           content: "excelFilter", 
@@ -49,6 +50,19 @@ export const getFormsGridConfig = () => {
           }
         }], 
         width: 250, 
+        sort: "string"
+      },
+      {
+        id: "description",
+        width: 200,
+        header: [{ 
+          text: "Description", 
+          content: "excelFilter", 
+          mode: "text",
+          filterConfig: {
+            field: "description"
+          }
+        }],
         sort: "string"
       },
       { 
