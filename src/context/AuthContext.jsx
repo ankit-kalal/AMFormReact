@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { authService } from '../services/authService';
 
@@ -127,9 +127,29 @@ export const AuthProvider = ({ children }) => {
     return { error };
   };
 
+  // Stabilize session object to prevent unnecessary re-renders and API calls
+  // Only recreate if the actual session data changes (access_token or user)
+  const stableSession = useMemo(() => {
+    if (!session) return null;
+    
+    return {
+      access_token: session.access_token,
+      refresh_token: session.refresh_token,
+      expires_at: session.expires_at,
+      expires_in: session.expires_in,
+      token_type: session.token_type,
+      user: session.user ? {
+        id: session.user.id,
+        email: session.user.email,
+        // Include other user properties if needed
+        ...session.user
+      } : null
+    };
+  }, [session?.access_token, session?.user?.id, session?.user?.email]);
+
   const value = {
     user,
-    session,
+    session: stableSession, // Use stabilized session
     loading,
     isAuthenticated: !!user,
     isLoading: loading || isCheckingRole,

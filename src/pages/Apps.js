@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -18,10 +18,19 @@ function Apps() {
   const { session } = useAuth();
   const [appsData, setAppsData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const hasFetchedRef = useRef(false);
+  const lastAccessTokenRef = useRef(null);
 
   useEffect(() => {
     const fetchApps = async () => {
-      if (session) {
+      // Only fetch if:
+      // 1. Session exists
+      // 2. Either we haven't fetched yet OR the access token has changed
+      const currentAccessToken = session?.access_token;
+      const shouldFetch = session && 
+        (!hasFetchedRef.current || currentAccessToken !== lastAccessTokenRef.current);
+
+      if (shouldFetch) {
         try {
           setLoading(true);
           const result = await getFormApps(session);
@@ -30,13 +39,15 @@ function Apps() {
           
           if (result.success && result.data) {
             setAppsData(result.data);
+            hasFetchedRef.current = true;
+            lastAccessTokenRef.current = currentAccessToken;
           }
         } catch (error) {
           console.error("❌ Error fetching apps:", error);
         } finally {
           setLoading(false);
         }
-      } else {
+      } else if (!session) {
         console.warn("⚠️ No session available for API call");
         setLoading(false);
       }
