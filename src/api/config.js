@@ -8,12 +8,17 @@
  * @returns {string} API base URL
  */
 export const getApiUrl = () => {
+  return `https://am-form-back-end-giantkillerrobo.replit.app/api`
+  
+  
   const hostname = window.location.hostname;
   
   // Development environment
   if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '0.0.0.0') {
     return 'http://0.0.0.0:8000/api';
   }
+
+  return `https://am-form-back-end-giantkillerrobo.replit.app/api`
   
   // Production environment - use same domain with /api path
   return `${window.location.protocol}//${window.location.host}/api`;

@@ -85,9 +85,7 @@ function FormDefinition() {
         }}
       >
         <MDBox mb={2} sx={{ flexShrink: 0 }}>
-          <MDTypography variant="h5" fontWeight="medium">
-            Form Definitions
-          </MDTypography>
+          
           <MDTypography variant="button" color="text">
             Manage and configure form definitions
           </MDTypography>
@@ -95,12 +93,9 @@ function FormDefinition() {
         <MDBox sx={{ flex: 1, overflow: "hidden", minHeight: 0 }}>
           <MDBox
             sx={{
-              backgroundColor: "white",
-              borderRadius: 2,
-              border: "1px solid #e5e5e5",
-              boxShadow: "0 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1), 0 0.125rem 0.25rem -0.0625rem rgba(0, 0, 0, 0.06)",
               height: "100%",
-              overflow: "hidden",
+              width: "100%",
+              backgroundColor: "white !important",
             }}
           >
             {loading ? (

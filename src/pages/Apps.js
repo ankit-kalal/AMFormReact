@@ -4,6 +4,8 @@ import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import WebixDataTable from "components/WebixDataTable";
+import MDButton from "components/MDButton";
+import Icon from "@mui/material/Icon";
 
 // Auth Context
 import { useAuth } from "context/AuthContext";
@@ -27,8 +29,10 @@ function Apps() {
       // 1. Session exists
       // 2. Either we haven't fetched yet OR the access token has changed
       const currentAccessToken = session?.access_token;
-      const shouldFetch = session && 
-        (!hasFetchedRef.current || currentAccessToken !== lastAccessTokenRef.current);
+      const shouldFetch =
+        session &&
+        (!hasFetchedRef.current ||
+          currentAccessToken !== lastAccessTokenRef.current);
 
       if (shouldFetch) {
         try {
@@ -36,7 +40,7 @@ function Apps() {
           const result = await getFormApps(session);
           console.log("📊 Apps API Response:", result);
           console.log("📋 Apps Data:", result.data);
-          
+
           if (result.success && result.data) {
             setAppsData(result.data);
             hasFetchedRef.current = true;
@@ -57,16 +61,16 @@ function Apps() {
   }, [session]);
 
   const handleAction = (action, rowData) => {
-    const appName = rowData.app_name || rowData.name || 'App';
-    const appId = rowData.id || 'N/A';
-    
+    const appName = rowData.app_name || rowData.name || "App";
+    const appId = rowData.id || "N/A";
+
     console.log(`Action: ${action}`, rowData);
-    
-    if (action === 'view') {
+
+    if (action === "view") {
       alert(`View action clicked for app: ${appName} (ID: ${appId})`);
-    } else if (action === 'edit') {
+    } else if (action === "edit") {
       alert(`Edit action clicked for app: ${appName} (ID: ${appId})`);
-    } else if (action === 'delete') {
+    } else if (action === "delete") {
       if (window.confirm(`Are you sure you want to delete app: ${appName}?`)) {
         alert(`Delete action clicked for app: ${appName} (ID: ${appId})`);
       }
@@ -85,26 +89,26 @@ function Apps() {
         }}
       >
         <MDBox mb={2} sx={{ flexShrink: 0 }}>
-          <MDTypography variant="h5" fontWeight="medium">
-            Apps
-          </MDTypography>
           <MDTypography variant="button" color="text">
             Manage applications and integrations
           </MDTypography>
         </MDBox>
+
         <MDBox sx={{ flex: 1, overflow: "hidden", minHeight: 0 }}>
           <MDBox
             sx={{
-              backgroundColor: "white",
-              borderRadius: 2,
-              border: "1px solid #e5e5e5",
-              boxShadow: "0 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1), 0 0.125rem 0.25rem -0.0625rem rgba(0, 0, 0, 0.06)",
               height: "100%",
-              overflow: "hidden",
+              width: "100%",
+              backgroundColor: "white !important",
             }}
           >
             {loading ? (
-              <MDBox display="flex" justifyContent="center" alignItems="center" height="100%">
+              <MDBox
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                height="100%"
+              >
                 <MDTypography>Loading apps...</MDTypography>
               </MDBox>
             ) : (
@@ -123,4 +127,3 @@ function Apps() {
 }
 
 export default Apps;
-
