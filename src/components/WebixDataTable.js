@@ -12,9 +12,12 @@ function WebixDataTable({ config, data, containerId, onAction }) {
   useEffect(() => {
     // Ensure Webix is available
     if (typeof window.webix === "undefined") {
-      console.error("Webix library is not loaded");
+      console.error("❌ WebixDataTable: Webix library is not loaded");
       return;
     }
+
+    let clickHandler = null;
+    let clickCleanup = null;
 
     // Initialize Webix only once
     if (!webixInstanceRef.current && containerRef.current) {
@@ -30,60 +33,169 @@ function WebixDataTable({ config, data, containerId, onAction }) {
       if (onAction && webixInstanceRef.current) {
         const grid = webixInstanceRef.current;
         
-        // Use Webix's onItemClick to handle button clicks
-        grid.attachEvent("onItemClick", function(id, e, node) {
+        // Use event delegation on the container to catch all button clicks
+        clickHandler = function(e) {
           const target = e.target || e.srcElement;
-          // Check if clicked element is a button/span or inside a button/span
-          const actionElement = target.closest && (
-            target.closest('button.webix-action-btn-style1') ||
-            target.closest('button.webix-action-btn-style2') ||
-            target.closest('button.webix-action-btn-style3') ||
-            target.closest('button.webix-action-btn-style3a') ||
-            target.closest('button.webix-action-btn-style3b') ||
-            target.closest('button.webix-action-btn-style3c') ||
-            target.closest('button.webix-action-btn-style3d') ||
-            target.closest('button.webix-action-btn-style3e') ||
-            target.closest('button.webix-action-btn-style3f') ||
-            target.closest('button.webix-action-btn-style3g') ||
-            target.closest('button.webix-action-btn-style3h') ||
-            target.closest('button.webix-action-btn-style3i') ||
-            target.closest('span.webix-action-btn-style4')
-          ) || (
-            (target.tagName === "BUTTON" && target.classList.contains('webix-action-btn-style1')) ||
-            (target.tagName === "BUTTON" && target.classList.contains('webix-action-btn-style2')) ||
-            (target.tagName === "BUTTON" && target.classList.contains('webix-action-btn-style3')) ||
-            (target.tagName === "BUTTON" && target.classList.contains('webix-action-btn-style3a')) ||
-            (target.tagName === "BUTTON" && target.classList.contains('webix-action-btn-style3b')) ||
-            (target.tagName === "BUTTON" && target.classList.contains('webix-action-btn-style3c')) ||
-            (target.tagName === "BUTTON" && target.classList.contains('webix-action-btn-style3d')) ||
-            (target.tagName === "BUTTON" && target.classList.contains('webix-action-btn-style3e')) ||
-            (target.tagName === "BUTTON" && target.classList.contains('webix-action-btn-style3f')) ||
-            (target.tagName === "BUTTON" && target.classList.contains('webix-action-btn-style3g')) ||
-            (target.tagName === "BUTTON" && target.classList.contains('webix-action-btn-style3h')) ||
-            (target.tagName === "BUTTON" && target.classList.contains('webix-action-btn-style3i')) ||
-            (target.tagName === "SPAN" && target.classList.contains('webix-action-btn-style4'))
-          );
+          
+          // Check if clicked element is a button with data-action attribute
+          let actionElement = null;
+          
+          // First, check if the target itself is a button with data-action
+          if (target && target.tagName === "BUTTON" && target.hasAttribute && target.hasAttribute("data-action")) {
+            actionElement = target;
+          } 
+          // Otherwise, check if we clicked inside a button (e.g., clicked on text inside button)
+          else if (target && target.closest) {
+            actionElement = target.closest('button[data-action]');
+          }
           
           if (actionElement) {
             const action = actionElement.getAttribute("data-action");
             const rowId = actionElement.getAttribute("data-row-id");
             
             if (action) {
-              // Get row data using the row ID from Webix
-              const rowData = grid.getItem(id);
+              // Try to get row data using rowId from data attribute
+              let rowData = null;
+              
+              // Method 1: Try to find by data id field
+              if (rowId) {
+                try {
+                  // First try using getItem with the rowId directly
+                  rowData = grid.getItem(rowId);
+                  
+                  // If not found, try searching in serialized data
+                  if (!rowData && grid.data) {
+                    const allData = grid.data.serialize();
+                    rowData = allData.find(item => {
+                      return String(item.id) === String(rowId) || 
+                             String(item.$id) === String(rowId);
+                    });
+                  }
+                } catch (err) {
+                  console.error("WebixDataTable: Error finding row data:", err);
+                }
+              }
+              
+              // Method 2: Try to find by traversing DOM to get Webix row ID
+              if (!rowData) {
+                let currentElement = actionElement;
+                let webixRowId = null;
+                
+                // Traverse up to find the Webix row
+                while (currentElement && !webixRowId) {
+                  if (currentElement.getAttribute) {
+                    const webixId = currentElement.getAttribute('webix_id') || 
+                                   currentElement.getAttribute('webix_r_id') ||
+                                   currentElement.getAttribute('id');
+                    if (webixId) {
+                      // Try to extract row ID from Webix ID format (usually gridId_rowId)
+                      const parts = webixId.split('_');
+                      if (parts.length > 1) {
+                        webixRowId = parts[parts.length - 1];
+                      } else {
+                        webixRowId = webixId;
+                      }
+                      break;
+                    }
+                  }
+                  currentElement = currentElement.parentElement;
+                  if (!currentElement || currentElement === containerRef.current) break;
+                }
+                
+                if (webixRowId) {
+                  try {
+                    rowData = grid.getItem(webixRowId);
+                  } catch (err) {
+                    console.error("WebixDataTable: Error getting item by webix_id:", err);
+                  }
+                }
+              }
+              
+              // Method 3: Try to find by cell ID
+              if (!rowData) {
+                try {
+                  const cellElement = actionElement.closest('[webix_c_id]') || actionElement.closest('td');
+                  if (cellElement) {
+                    const cellId = cellElement.getAttribute('webix_c_id');
+                    if (cellId) {
+                      const parts = cellId.split('_');
+                      if (parts.length > 0) {
+                        const potentialRowId = parts[parts.length - 1];
+                        rowData = grid.getItem(potentialRowId);
+                      }
+                    }
+                  }
+                } catch (err) {
+                  console.error("WebixDataTable: Error in cell ID lookup:", err);
+                }
+              }
+              
               if (rowData) {
-                onAction(action, rowData);
+                try {
+                  onAction(action, rowData);
+                } catch (err) {
+                  console.error("WebixDataTable: Error calling onAction:", err);
+                }
                 e.stopPropagation();
+                e.preventDefault();
                 return false;
+              } else {
+                console.error("WebixDataTable: Could not find row data for action:", action, "rowId:", rowId);
               }
             }
           }
-        });
+        };
+        
+        // Attach click handler to the grid container
+        if (containerRef.current) {
+          containerRef.current.addEventListener('click', clickHandler, true); // Use capture phase
+          
+          clickCleanup = () => {
+            if (containerRef.current && clickHandler) {
+              containerRef.current.removeEventListener('click', clickHandler, true);
+            }
+          };
+        }
+        
+        // Also use Webix's onItemClick as primary handler (more reliable)
+        const onItemClickHandler = function(id, e, node) {
+          const target = e.target || e.srcElement || (e.originalEvent && e.originalEvent.target);
+          
+          if (target) {
+            // Check if target is a button or inside a button
+            let buttonElement = null;
+            if (target.tagName === "BUTTON" && target.hasAttribute && target.hasAttribute("data-action")) {
+              buttonElement = target;
+            } else if (target.closest) {
+              buttonElement = target.closest('button[data-action]');
+            }
+            
+            if (buttonElement) {
+              const action = buttonElement.getAttribute("data-action");
+              
+              try {
+                const rowData = grid.getItem(id);
+                if (rowData && onAction) {
+                  onAction(action, rowData);
+                  e.stopPropagation();
+                  return false;
+                }
+              } catch (err) {
+                console.error("WebixDataTable: Error in onItemClick:", err);
+              }
+            }
+          }
+        };
+        
+        grid.attachEvent("onItemClick", onItemClickHandler);
       }
     }
 
     // Cleanup on unmount
     return () => {
+      if (clickCleanup) {
+        clickCleanup();
+      }
       if (webixInstanceRef.current) {
         webixInstanceRef.current.destructor();
         webixInstanceRef.current = null;

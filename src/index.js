@@ -27,6 +27,30 @@ import { MaterialUIControllerProvider } from "context";
 // Auth Context Provider
 import { AuthProvider } from "context/AuthContext";
 
+// Suppress ResizeObserver errors (harmless but annoying)
+const originalError = console.error;
+console.error = (...args) => {
+  if (
+    args[0]?.includes?.('ResizeObserver loop') ||
+    args[0]?.includes?.('ResizeObserver loop completed with undelivered notifications')
+  ) {
+    // Suppress ResizeObserver errors - they're harmless
+    return;
+  }
+  originalError.apply(console, args);
+};
+
+// Global error handler to suppress ResizeObserver errors
+window.addEventListener('error', (event) => {
+  if (
+    event.message?.includes('ResizeObserver loop') ||
+    event.message?.includes('ResizeObserver loop completed with undelivered notifications')
+  ) {
+    event.preventDefault();
+    return false;
+  }
+});
+
 const container = document.getElementById("app");
 const root = createRoot(container);
 
