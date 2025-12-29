@@ -96,6 +96,7 @@ const initialState = {
   apps: [],
   currentApp: null,
   loading: false,
+  loadingAppDetails: false,
   creating: false,
   updating: false,
   deleting: false,
@@ -143,16 +144,16 @@ const appsSlice = createSlice({
       })
       // Fetch app by ID
       .addCase(fetchAppById.pending, (state) => {
-        state.loading = true;
+        state.loadingAppDetails = true;
         state.error = null;
       })
       .addCase(fetchAppById.fulfilled, (state, action) => {
-        state.loading = false;
+        state.loadingAppDetails = false;
         state.currentApp = action.payload;
         state.error = null;
       })
       .addCase(fetchAppById.rejected, (state, action) => {
-        state.loading = false;
+        state.loadingAppDetails = false;
         state.error = action.payload || 'Failed to fetch app';
       })
       // Create app

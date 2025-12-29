@@ -87,10 +87,11 @@ export const getFormAppById = async (session, appId) => {
         version: '1.0.0',
         status: status,
         status_value: app.status_value || 'active',
-        form_count: 0,
+        form_count: app.form_definitions ? app.form_definitions.length : 0,
         created_at: formatDate(app.created_at),
         updated_at: formatDate(app.updated_at),
-        created_by: ''
+        created_by: '',
+        form_definitions: app.form_definitions || []
       }
     };
   } catch (error) {
