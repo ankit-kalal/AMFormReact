@@ -24,8 +24,6 @@ function AppForm({
   onSubmit,
   onSwitchToEdit,
 }) {
-  if (!isOpen) return null;
-
   const getTitle = () => {
     if (viewMode) return "View App";
     if (editingAppId) return "Edit App";
@@ -43,12 +41,16 @@ function AppForm({
         backgroundColor: "white",
         borderLeft: "1px solid",
         borderColor: "divider",
-        transition: "width 0.3s ease-in-out",
+        transition: "transform 300ms cubic-bezier(0.4, 0, 0.2, 1), opacity 300ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1)",
         overflow: "hidden",
         zIndex: 100,
         display: "flex",
         flexDirection: "column",
-        boxShadow: "-2px 0 8px rgba(0,0,0,0.1)",
+        boxShadow: isOpen ? "-4px 0 20px rgba(0,0,0,0.12)" : "none",
+        transform: isOpen ? "translateX(0)" : "translateX(100%)",
+        opacity: isOpen ? 1 : 0,
+        visibility: isOpen ? "visible" : "hidden",
+        willChange: "transform, opacity",
       }}
     >
       {/* Header */}
@@ -58,6 +60,9 @@ function AppForm({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          opacity: isOpen ? 1 : 0,
+          transform: isOpen ? "translateY(0)" : "translateY(-8px)",
+          transition: "opacity 300ms cubic-bezier(0.4, 0, 0.2, 1) 100ms, transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 100ms",
         }}
       >
         <MDTypography variant="h5" fontWeight="medium">
@@ -84,6 +89,9 @@ function AppForm({
           display: "flex",
           flexDirection: "row",
           overflow: "hidden",
+          opacity: isOpen ? 1 : 0,
+          transform: isOpen ? "translateX(0)" : "translateX(10px)",
+          transition: "opacity 300ms cubic-bezier(0.4, 0, 0.2, 1) 150ms, transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 150ms",
         }}
       >
         {loadingAppDetails ? (

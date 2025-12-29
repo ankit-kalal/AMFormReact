@@ -7,7 +7,7 @@ import { getAppsGridConfig } from "webix/appsGrid";
  * AppsTable Component
  * Displays the apps data table with loading and error states
  */
-function AppsTable({ loading, error, appsData, onAction }) {
+function AppsTable({ loading, error, appsData, onAction, disabled }) {
   if (loading) {
     return (
       <MDBox
@@ -42,12 +42,20 @@ function AppsTable({ loading, error, appsData, onAction }) {
   }
 
   return (
-    <WebixDataTable
-      config={getAppsGridConfig()}
-      data={appsData}
-      containerId="apps-webix-container"
-      onAction={onAction}
-    />
+    <MDBox
+      sx={{
+        height: "100%",
+        width: "100%",
+        pointerEvents: disabled ? "none" : "auto",
+      }}
+    >
+      <WebixDataTable
+        config={getAppsGridConfig()}
+        data={appsData}
+        containerId="apps-webix-container"
+        onAction={disabled ? undefined : onAction}
+      />
+    </MDBox>
   );
 }
 

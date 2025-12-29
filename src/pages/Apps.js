@@ -146,10 +146,15 @@ function Apps() {
             flex: 1,
             display: "flex",
             flexDirection: "column",
-            transition: "margin-right 0.3s ease-in-out",
+            transition: "margin-right 300ms cubic-bezier(0.4, 0, 0.2, 1), transform 300ms cubic-bezier(0.4, 0, 0.2, 1), opacity 300ms cubic-bezier(0.4, 0, 0.2, 1)",
             marginRight: isFormOpen ? { xs: 0, sm: "70%" } : 0,
+            transform: isFormOpen ? { xs: "scale(1)", sm: "scale(0.99)" } : "scale(1)",
+            opacity: isFormOpen ? 0.6 : 1,
+            pointerEvents: isFormOpen ? "none" : "auto",
+            willChange: "margin-right, transform, opacity",
             overflow: "hidden",
             minWidth: 0,
+            position: "relative",
           }}
         >
           <MDBox 
@@ -168,7 +173,13 @@ function Apps() {
             <MDTypography variant="button" color="text">
               Manage applications and integrations
             </MDTypography>
-            <MDButton variant="contained" color="white" size="small" onClick={() => openForm("create")}>
+            <MDButton 
+              variant="contained" 
+              color="white" 
+              size="small" 
+              onClick={() => openForm("create")}
+              disabled={isFormOpen}
+            >
               <Icon>add</Icon>&nbsp; Add New
             </MDButton>
           </MDBox>
@@ -186,6 +197,7 @@ function Apps() {
                 error={error}
                 appsData={appsData}
                 onAction={handleAction}
+                disabled={isFormOpen}
               />
             </MDBox>
           </MDBox>
