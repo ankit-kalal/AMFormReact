@@ -88,10 +88,25 @@ function Apps() {
           overflow: "hidden",
         }}
       >
-        <MDBox mb={2} sx={{ flexShrink: 0 }}>
+        <MDBox 
+          mb={2} 
+          sx={{ 
+            flexShrink: 0,
+            backgroundColor: "white !important",
+            padding: 0.5,
+            borderRadius: 1,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 0.5,
+          }}
+        >
           <MDTypography variant="button" color="text">
             Manage applications and integrations
           </MDTypography>
+          <MDButton variant="contained" color="white" size="small" onClick={() => alert("Add new app")}>
+            <Icon>add</Icon>&nbsp; Add New
+          </MDButton>
         </MDBox>
 
         <MDBox sx={{ flex: 1, overflow: "hidden", minHeight: 0 }}>
