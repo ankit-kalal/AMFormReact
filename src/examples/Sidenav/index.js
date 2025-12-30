@@ -100,7 +100,7 @@ function Sidenav({ color = "info", brand = "", brandName, routes, ...rest }) {
 
     // Remove event listener on cleanup
     return () => window.removeEventListener("resize", handleMiniSidenav);
-  }, [dispatch, location]);
+  }, [dispatch]);
 
   // Render all the nested collapse items from the routes.js
   const renderNestedCollapse = (collapse) => {
@@ -260,7 +260,19 @@ function Sidenav({ color = "info", brand = "", brandName, routes, ...rest }) {
       variant="permanent"
       ownerState={{ transparentSidenav, whiteSidenav, miniSidenav, darkMode }}
     >
-      <MDBox pt={2.5} pb={0} px={3} textAlign="center">
+      <MDBox 
+        pt={1.5} 
+        pb={0} 
+        px={3} 
+        textAlign="center"
+        sx={{
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <MDBox
           display={{ xs: "block", xl: "none" }}
           position="absolute"
@@ -268,29 +280,41 @@ function Sidenav({ color = "info", brand = "", brandName, routes, ...rest }) {
           right={0}
           p={1.625}
           onClick={closeSidenav}
-          sx={{ cursor: "pointer" }}
+          sx={{ cursor: "pointer", zIndex: 1 }}
         >
           <MDTypography variant="h6" color="secondary">
             <Icon sx={{ fontWeight: "bold" }}>close</Icon>
           </MDTypography>
         </MDBox>
-        <MDBox component={NavLink} to="/" display="flex" alignItems="center">
+        <MDBox 
+          component={NavLink} 
+          to="/" 
+          display="flex" 
+          alignItems="center"
+          justifyContent="center"
+          sx={{
+            transition: "all 0.2s ease-in-out",
+            width: "100%",
+            position: "relative",
+          }}
+        >
           {brand && (
-            <MDBox component="img" src={brand} alt="Brand" width="1.75rem" />
+            <MDBox 
+              component="img" 
+              src={brand} 
+              alt="Brand" 
+              sx={{
+                width: "90%",
+                height: "auto",
+                maxWidth: "90%",
+                maxHeight: miniSidenav ? "3.5rem" : "5rem",
+                objectFit: "contain",
+                transition: "all 0.2s ease-in-out",
+                display: "block",
+                margin: "0 auto",
+              }}
+            />
           )}
-          <MDBox
-            width={!brandName && "100%"}
-            sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}
-          >
-            <MDTypography
-              component="h6"
-              variant="button"
-              fontWeight="regular"
-              color={textColor}
-            >
-              {brandName}
-            </MDTypography>
-          </MDBox>
         </MDBox>
       </MDBox>
       <Divider

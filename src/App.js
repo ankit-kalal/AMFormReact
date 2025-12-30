@@ -63,8 +63,8 @@ import { useAuth } from "context/AuthContext";
 import ProtectedRoute from "components/ProtectedRoute";
 
 // Images
-import brandWhite from "assets/images/logo-ct.png";
-import brandDark from "assets/images/logo-ct-dark.png";
+import brandWhite from "assets/images/AM-Works.jpg";
+import brandDark from "assets/images/AM-Works.jpg";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -201,7 +201,7 @@ export default function App() {
                   ? brandDark
                   : brandWhite
               }
-              brandName="Creative Tim"
+              brandName=""
               routes={routes}
               onMouseEnter={handleOnMouseEnter}
               onMouseLeave={handleOnMouseLeave}
@@ -241,7 +241,7 @@ export default function App() {
                 ? brandDark
                 : brandWhite
             }
-            brandName="Creative Tim"
+            brandName=""
             routes={routes}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
