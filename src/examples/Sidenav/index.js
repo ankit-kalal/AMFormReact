@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 // react-router-dom components
 import { useLocation, NavLink } from "react-router-dom";
@@ -74,33 +74,46 @@ function Sidenav({ color = "info", brand = "", brandName, routes, ...rest }) {
   useEffect(() => {
     setOpenCollapse(collapseName);
     setOpenNestedCollapse(itemParentName);
-  }, []);
+  }, [collapseName, itemParentName]);
+
+  // Use a ref to track if we've initialized the sidenav state
+  const hasInitialized = useRef(false);
 
   useEffect(() => {
-    // A function that sets the mini state of the sidenav.
-    function handleMiniSidenav() {
-      setMiniSidenav(dispatch, window.innerWidth < 1200);
-      setTransparentSidenav(
-        dispatch,
-        window.innerWidth < 1200 ? false : transparentSidenav
-      );
-      setWhiteSidenav(
-        dispatch,
-        window.innerWidth < 1200 ? false : whiteSidenav
-      );
+    // Only initialize once on mount, never on navigation
+    // This preserves the expanded state on large screens when navigating
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
+      // Only set mini on small screens on initial mount
+      if (window.innerWidth < 1200) {
+        setMiniSidenav(dispatch, true);
+        setTransparentSidenav(dispatch, false);
+        setWhiteSidenav(dispatch, false);
+      }
+      // On large screens, keep the initial state (expanded)
+    }
+
+    // A function that handles window resize
+    // Only forces mini state on small screens, preserves state on large screens
+    function handleResize() {
+      if (window.innerWidth < 1200) {
+        // Small screen: force mini
+        setMiniSidenav(dispatch, true);
+        setTransparentSidenav(dispatch, false);
+        setWhiteSidenav(dispatch, false);
+      }
+      // Large screen: don't change miniSidenav state (preserve user's choice)
     }
 
     /** 
-     The event listener that's calling the handleMiniSidenav function when resizing the window.
+     The event listener that's calling the handleResize function when resizing the window.
     */
-    window.addEventListener("resize", handleMiniSidenav);
-
-    // Call the handleMiniSidenav function to set the state with the initial value.
-    handleMiniSidenav();
+    window.addEventListener("resize", handleResize);
 
     // Remove event listener on cleanup
-    return () => window.removeEventListener("resize", handleMiniSidenav);
-  }, [dispatch]);
+    return () => window.removeEventListener("resize", handleResize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty dependency array - only run once on mount
 
   // Render all the nested collapse items from the routes.js
   const renderNestedCollapse = (collapse) => {
