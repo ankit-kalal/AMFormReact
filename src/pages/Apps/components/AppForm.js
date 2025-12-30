@@ -42,7 +42,7 @@ function AppForm({
         borderLeft: "1px solid",
         borderColor: "divider",
         transition: "transform 300ms cubic-bezier(0.4, 0, 0.2, 1), opacity 300ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1)",
-        overflow: "hidden",
+        overflow: "auto",
         zIndex: 100,
         display: "flex",
         flexDirection: "column",
@@ -56,7 +56,7 @@ function AppForm({
       {/* Header */}
       <MDBox
         sx={{
-          p: 3,
+          p: viewMode ? 2 : 3,
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
@@ -88,7 +88,7 @@ function AppForm({
           flex: 1,
           display: "flex",
           flexDirection: "row",
-          overflow: "hidden",
+          overflow: "auto",
           opacity: isOpen ? 1 : 0,
           transform: isOpen ? "translateX(0)" : "translateX(10px)",
           transition: "opacity 300ms cubic-bezier(0.4, 0, 0.2, 1) 150ms, transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 150ms",
@@ -126,7 +126,7 @@ function AppForm({
               sx={{
                 flex: 1,
                 p: 3,
-                overflowY: "auto",
+                overflowY: "visible",
                 display: "flex",
                 flexDirection: "column",
               }}
