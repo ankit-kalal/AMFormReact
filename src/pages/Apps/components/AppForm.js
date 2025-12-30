@@ -38,7 +38,7 @@ function AppForm({
         top: 0,
         bottom: 0,
         width: { xs: "100%", sm: "70%" },
-        backgroundColor: "white",
+        backgroundColor: "background.paper",
         borderLeft: "1px solid",
         borderColor: "divider",
         transition: "transform 300ms cubic-bezier(0.4, 0, 0.2, 1), opacity 300ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1)",

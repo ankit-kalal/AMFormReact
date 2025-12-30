@@ -122,7 +122,7 @@ function OrganizationSelector({ icon, name = "Organization", color = "info" }) {
   };
 
   return (
-    <div ref={dropdownRef}>
+    <MDBox ref={dropdownRef}>
       <SidenavCollapse
         name={selectedOrganization?.name || name}
         icon={icon}
@@ -135,7 +135,7 @@ function OrganizationSelector({ icon, name = "Organization", color = "info" }) {
         }}
         children={open ? renderDropdownItems() : null}
       />
-    </div>
+    </MDBox>
   );
 }
 

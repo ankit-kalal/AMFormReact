@@ -161,7 +161,7 @@ function Apps() {
             mb={2} 
             sx={{ 
               flexShrink: 0,
-              backgroundColor: "white !important",
+              backgroundColor: "background.paper",
               padding: 0.5,
               borderRadius: 1,
               display: "flex",
@@ -189,7 +189,7 @@ function Apps() {
               sx={{
                 height: "100%",
                 width: "100%",
-                backgroundColor: "white !important",
+                backgroundColor: "background.paper",
               }}
             >
               <AppsTable
