@@ -107,7 +107,6 @@ const routes = [
       },
     ],
   },
-  { type: "divider", key: "divider-before-org" },
   {
     type: "organizationSelector",
     key: "organization-selector",
