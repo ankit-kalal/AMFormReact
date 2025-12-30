@@ -11,27 +11,37 @@ export function useApps() {
   const { apps: appsData, loading, loadingAppDetails, creating, updating, deleting, error } = useAppSelector(
     (state) => state.apps
   );
+  const { selectedOrganization } = useAppSelector((state) => state.organizations);
   const { session } = useAuth();
 
   const hasFetchedRef = useRef(false);
   const lastAccessTokenRef = useRef(null);
+  const lastOrganizationIdRef = useRef(null);
 
-  // Fetch apps on mount or when session changes
+  // Fetch apps on mount, when session changes, or when organization changes
   useEffect(() => {
     const currentAccessToken = session?.access_token;
+    const currentOrganizationId = selectedOrganization?.id;
+    
     const shouldFetch =
       session &&
-      (!hasFetchedRef.current || currentAccessToken !== lastAccessTokenRef.current);
+      currentOrganizationId &&
+      (
+        !hasFetchedRef.current || 
+        currentAccessToken !== lastAccessTokenRef.current ||
+        currentOrganizationId !== lastOrganizationIdRef.current
+      );
 
     if (shouldFetch) {
-      dispatch(fetchApps(session)).then((result) => {
+      dispatch(fetchApps({ session, organizationId: currentOrganizationId })).then((result) => {
         if (result.type === "apps/fetchApps/fulfilled") {
           hasFetchedRef.current = true;
           lastAccessTokenRef.current = currentAccessToken;
+          lastOrganizationIdRef.current = currentOrganizationId;
         }
       });
     }
-  }, [session, dispatch]);
+  }, [session, dispatch, selectedOrganization?.id]);
 
   return {
     appsData,

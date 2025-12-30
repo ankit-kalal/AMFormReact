@@ -6,6 +6,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import { useAppSelector } from "store/hooks";
 
 /**
  * AppInfoForm Component
@@ -23,6 +24,7 @@ function AppInfoForm({
   onEdit,
   onCancel,
 }) {
+  const { selectedOrganization } = useAppSelector((state) => state.organizations);
   return (
     <MDBox
       sx={{
@@ -48,6 +50,16 @@ function AppInfoForm({
           onChange={onInputChange("app_name")}
           disabled={viewMode}
           required
+        />
+      </MDBox>
+
+      <MDBox mb={3}>
+        <MDInput
+          label="Organization"
+          variant="standard"
+          fullWidth
+          value={selectedOrganization?.name || "N/A"}
+          disabled
         />
       </MDBox>
 

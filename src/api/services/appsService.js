@@ -8,12 +8,16 @@ import { API_BASE_URL, getAuthHeaders, handleResponse, formatDate } from '../con
 /**
  * Get all form apps
  * @param {Object} session - Supabase session object
+ * @param {string|number} organizationId - Optional organization ID to filter apps
  * @returns {Promise<Object>} Result object with success status and data array
  */
-export const getFormApps = async (session) => {
+export const getFormApps = async (session, organizationId = null) => {
   try {
     const headers = await getAuthHeaders(session);
-    const response = await fetch(`${API_BASE_URL}/form_apps/`, {
+    const url = organizationId 
+      ? `${API_BASE_URL}/form_apps/?organization_id=${organizationId}`
+      : `${API_BASE_URL}/form_apps/`;
+    const response = await fetch(url, {
       method: 'GET',
       headers: headers
     });
@@ -107,7 +111,7 @@ export const getFormAppById = async (session, appId) => {
 /**
  * Create a new form app
  * @param {Object} session - Supabase session object
- * @param {Object} appData - App data { app_name, status_value }
+ * @param {Object} appData - App data { app_name, status_value, organizations_id }
  * @returns {Promise<Object>} Result object with success status and created app data
  */
 export const createFormApp = async (session, appData) => {
@@ -120,6 +124,7 @@ export const createFormApp = async (session, appData) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
+        organizations_id: appData.organizations_id,
         app_name: appData.app_name,
         status_value: appData.status_value || 'active'
       })

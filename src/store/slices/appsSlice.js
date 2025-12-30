@@ -10,9 +10,9 @@ import {
 // Async thunk for fetching apps
 export const fetchApps = createAsyncThunk(
   'apps/fetchApps',
-  async (session, { rejectWithValue }) => {
+  async ({ session, organizationId }, { rejectWithValue }) => {
     try {
-      const result = await getFormApps(session);
+      const result = await getFormApps(session, organizationId);
       if (result.success) {
         return result.data;
       } else {
@@ -44,9 +44,12 @@ export const fetchAppById = createAsyncThunk(
 // Async thunk for creating app
 export const createApp = createAsyncThunk(
   'apps/createApp',
-  async ({ session, appData }, { rejectWithValue }) => {
+  async ({ session, organizationId, appData }, { rejectWithValue }) => {
     try {
-      const result = await createFormApp(session, appData);
+      const result = await createFormApp(session, {
+        ...appData,
+        organizations_id: organizationId
+      });
       if (result.success) {
         return result.data;
       } else {

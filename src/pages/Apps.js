@@ -11,6 +11,7 @@ import AppsTable from "./Apps/components/AppsTable";
 
 // Hooks
 import { useApps, useAppForm, fetchAppDetails } from "./Apps/hooks/useApps";
+import { useAppSelector } from "store/hooks";
 
 // Utils
 import { confirmDelete } from "./Apps/components/DeleteConfirmDialog";
@@ -19,6 +20,7 @@ import { createApp, updateApp, deleteApp } from "store/slices/appsSlice";
 function Apps() {
   // Custom hooks
   const { appsData, loading, loadingAppDetails, creating, updating, error, session, dispatch } = useApps();
+  const { selectedOrganization } = useAppSelector((state) => state.organizations);
   const {
     isFormOpen,
     editingAppId,
@@ -100,6 +102,11 @@ function Apps() {
       return;
     }
 
+    if (!selectedOrganization?.id) {
+      alert("Please select an organization first");
+      return;
+    }
+
     try {
       const appData = {
         app_name: formData.app_name,
@@ -111,7 +118,7 @@ function Apps() {
       if (editingAppId) {
         await dispatch(updateApp({ session, appId: editingAppId, appData })).unwrap();
       } else {
-        await dispatch(createApp({ session, appData })).unwrap();
+        await dispatch(createApp({ session, organizationId: selectedOrganization.id, appData })).unwrap();
       }
       closeForm();
     } catch (error) {
@@ -177,29 +184,53 @@ function Apps() {
               variant="contained" 
               color="white" 
               size="small" 
-              onClick={() => openForm("create")}
-              disabled={isFormOpen}
+              onClick={() => {
+                if (!selectedOrganization?.id) {
+                  alert("Please select an organization first");
+                  return;
+                }
+                openForm("create");
+              }}
+              disabled={isFormOpen || !selectedOrganization?.id}
             >
               <Icon>add</Icon>&nbsp; Add New
             </MDButton>
           </MDBox>
 
           <MDBox sx={{ flex: 1, overflow: "hidden", minHeight: 0 }}>
-            <MDBox
-              sx={{
-                height: "100%",
-                width: "100%",
-                backgroundColor: "background.paper",
-              }}
-            >
-              <AppsTable
-                loading={loading}
-                error={error}
-                appsData={appsData}
-                onAction={handleAction}
-                disabled={isFormOpen}
-              />
-            </MDBox>
+            {!selectedOrganization?.id ? (
+              <MDBox
+                sx={{
+                  height: "100%",
+                  width: "100%",
+                  backgroundColor: "background.paper",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  p: 3,
+                }}
+              >
+                <MDTypography variant="h6" color="text">
+                  Please select an organization to view apps
+                </MDTypography>
+              </MDBox>
+            ) : (
+              <MDBox
+                sx={{
+                  height: "100%",
+                  width: "100%",
+                  backgroundColor: "background.paper",
+                }}
+              >
+                <AppsTable
+                  loading={loading}
+                  error={error}
+                  appsData={appsData}
+                  onAction={handleAction}
+                  disabled={isFormOpen}
+                />
+              </MDBox>
+            )}
           </MDBox>
         </MDBox>
 
