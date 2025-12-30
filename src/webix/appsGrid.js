@@ -28,16 +28,6 @@ export const getAppsGridConfig = () => {
           return '<button style="background: none; border: none; color: #388e3c; cursor: pointer; font-size: 11px; font-weight: 600; text-transform: uppercase; padding: 6px 0; text-decoration: none;" onmouseover="this.style.textDecoration=\'underline\'" onmouseout="this.style.textDecoration=\'none\'" data-action="edit" data-row-id="' + rowId + '">Edit</button>';
         }
       },
-      {
-        id: "delete_action",
-        header: "Delete",
-        width: 60,
-        sort: false,
-        template: function(obj, common, column) {
-          const rowId = obj.id || obj.$id || common.$id || '';
-          return '<button style="background: none; border: none; color: #d32f2f; cursor: pointer; font-size: 11px; font-weight: 600; text-transform: uppercase; padding: 6px 0; text-decoration: none;" onmouseover="this.style.textDecoration=\'underline\'" onmouseout="this.style.textDecoration=\'none\'" data-action="delete" data-row-id="' + rowId + '">Delete</button>';
-        }
-      },
       { 
         id: "app_name", 
         width: 200,
