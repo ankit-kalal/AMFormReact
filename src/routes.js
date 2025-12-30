@@ -72,6 +72,7 @@ import Apps from "pages/Apps";
 
 // Material Dashboard 3 PRO React components
 import MDAvatar from "components/MDAvatar";
+import OrganizationSelector from "components/OrganizationSelector";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -105,6 +106,12 @@ const routes = [
         component: <Logout />,
       },
     ],
+  },
+  { type: "divider", key: "divider-before-org" },
+  {
+    type: "organizationSelector",
+    key: "organization-selector",
+    icon: <Icon fontSize="small">business</Icon>,
   },
   { type: "divider", key: "divider-0" },
   // {

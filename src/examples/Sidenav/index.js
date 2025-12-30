@@ -35,6 +35,7 @@ import MDTypography from "components/MDTypography";
 import SidenavCollapse from "examples/Sidenav/SidenavCollapse";
 import SidenavList from "examples/Sidenav/SidenavList";
 import SidenavItem from "examples/Sidenav/SidenavItem";
+import OrganizationSelector from "components/OrganizationSelector";
 
 // Custom styles for the Sidenav
 import SidenavRoot from "examples/Sidenav/SidenavRoot";
@@ -185,7 +186,15 @@ function Sidenav({ color = "info", brand = "", brandName, routes, ...rest }) {
     ({ type, name, icon, title, collapse, noCollapse, key, href, route }) => {
       let returnValue;
 
-      if (type === "collapse") {
+      if (type === "organizationSelector") {
+        returnValue = (
+          <OrganizationSelector
+            key={key}
+            icon={icon}
+            name={name}
+          />
+        );
+      } else if (type === "collapse") {
         if (href) {
           returnValue = (
             <Link
