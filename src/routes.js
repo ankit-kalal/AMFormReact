@@ -124,6 +124,15 @@ const routes = [
   // },
   {
     type: "collapse",
+    name: "Apps",
+    key: "apps",
+    icon: <Icon fontSize="small">apps</Icon>,
+    route: "/apps",
+    component: <Apps />,
+    noCollapse: true,
+  },
+  {
+    type: "collapse",
     name: "Form Definition",
     key: "form-definition",
     icon: <Icon fontSize="small">description</Icon>,
@@ -149,15 +158,7 @@ const routes = [
     component: <Groups />,
     noCollapse: true,
   },
-  {
-    type: "collapse",
-    name: "Apps",
-    key: "apps",
-    icon: <Icon fontSize="small">apps</Icon>,
-    route: "/apps",
-    component: <Apps />,
-    noCollapse: true,
-  },
+  
   {
     type: "collapse",
     name: "Sign In Basic",
