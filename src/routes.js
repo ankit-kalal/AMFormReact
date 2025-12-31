@@ -114,14 +114,14 @@ const routes = [
     icon: <Icon fontSize="small">business</Icon>,
   },
   { type: "divider", key: "divider-0" },
-  {
-    type: "collapse",
-    name: "Analytics",
-    key: "analytics",
-    route: "/dashboards/analytics",
-    component: <Analytics />,
-    noCollapse: true,
-  },
+  // {
+  //   type: "collapse",
+  //   name: "Analytics",
+  //   key: "analytics",
+  //   route: "/dashboards/analytics",
+  //   component: <Analytics />,
+  //   noCollapse: true,
+  // },
   {
     type: "collapse",
     name: "Form Definition",
@@ -165,6 +165,7 @@ const routes = [
     route: "/authentication/sign-in/basic",
     component: <SignInBasic />,
     noCollapse: true,
+    hideWhenAuthenticated: true, // Hide this route when user is logged in
   },
   // { type: "title", title: "Pages", key: "title-pages" },
   // {

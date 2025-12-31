@@ -49,6 +49,9 @@ import {
   setWhiteSidenav,
 } from "context";
 
+// Auth context
+import { useAuth } from "context/AuthContext";
+
 function Sidenav({ color = "info", brand = "", brandName, routes, ...rest }) {
   const [openCollapse, setOpenCollapse] = useState(false);
   const [openNestedCollapse, setOpenNestedCollapse] = useState(false);
@@ -58,6 +61,16 @@ function Sidenav({ color = "info", brand = "", brandName, routes, ...rest }) {
   const location = useLocation();
   const { pathname } = location;
   const collapseName = pathname.split("/").slice(1)[0];
+  const { isAuthenticated } = useAuth();
+  
+  // Filter routes based on authentication status
+  const filteredRoutes = routes.filter((route) => {
+    // Hide routes marked with hideWhenAuthenticated if user is authenticated
+    if (route.hideWhenAuthenticated && isAuthenticated) {
+      return false;
+    }
+    return true;
+  });
   const items = pathname.split("/").slice(1);
   const itemParentName = items[1];
   const itemName = items[items.length - 1];
@@ -182,7 +195,7 @@ function Sidenav({ color = "info", brand = "", brandName, routes, ...rest }) {
     });
 
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
-  const renderRoutes = routes.map(
+  const renderRoutes = filteredRoutes.map(
     ({ type, name, icon, title, collapse, noCollapse, key, href, route }) => {
       let returnValue;
 
