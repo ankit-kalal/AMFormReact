@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
             // Add a small delay to ensure we're not in the middle of logout
             setTimeout(() => {
               if (!justLoggedOut.current && session?.user) {
-                const redirectPath = userRole === 'admin' ? '/dashboards/analytics' : '/dashboards/analytics';
+                const redirectPath = '/apps';
                 console.log(`🔄 Redirecting ${userRole} to ${redirectPath}`);
                 navigate(redirectPath);
               }
@@ -111,7 +111,7 @@ export const AuthProvider = ({ children }) => {
           
           // Only redirect if on root or login page, not if already on a valid route
           if (currentPath === '/' || currentPath === '/login' || currentPath === '/authentication/sign-in/basic') {
-            const redirectPath = userRole === 'admin' ? '/dashboards/analytics' : '/dashboards/analytics';
+            const redirectPath = '/apps';
             console.log(`🔄 User signed in as ${userRole}, redirecting to ${redirectPath}`);
             navigate(redirectPath);
           }

@@ -252,7 +252,7 @@ export default function App() {
                 <Navigate
                   to={
                     isAuthenticated
-                      ? "/dashboards/analytics"
+                      ? "/apps"
                       : "/authentication/sign-in/basic"
                   }
                   replace

@@ -71,7 +71,7 @@ function Basic() {
         // Only redirect if we're still authenticated after the delay
         if (isAuthenticated) {
           hasCheckedAuth.current = true;
-          navigate("/dashboards/analytics");
+          navigate("/apps");
         } else {
           hasCheckedAuth.current = false; // Reset if auth state changed
         }
