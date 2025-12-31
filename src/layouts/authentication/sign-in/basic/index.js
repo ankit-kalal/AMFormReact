@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 // react-router-dom components
 import { Link, useNavigate } from "react-router-dom";
 
@@ -55,15 +55,33 @@ function Basic() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   
-  const { signIn, isAuthenticated } = useAuth();
+  const { signIn, isAuthenticated, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const hasCheckedAuth = useRef(false);
 
-  // Redirect if already authenticated
+  // Redirect if already authenticated, but only once and after loading is complete
+  // This prevents redirecting immediately after logout when session might still be clearing
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/dashboards/analytics");
+    // Don't redirect if we just loaded the page (might be after logout)
+    // Wait for authLoading to be false and then wait a bit more
+    if (!authLoading && isAuthenticated && !hasCheckedAuth.current) {
+      // Longer delay to ensure logout process is complete
+      const timer = setTimeout(() => {
+        // Double-check authentication state before redirecting
+        // Only redirect if we're still authenticated after the delay
+        if (isAuthenticated) {
+          hasCheckedAuth.current = true;
+          navigate("/dashboards/analytics");
+        } else {
+          hasCheckedAuth.current = false; // Reset if auth state changed
+        }
+      }, 1000); // Increased delay to 1 second
+      return () => clearTimeout(timer);
+    } else if (!isAuthenticated) {
+      // Reset the check flag when user is not authenticated
+      hasCheckedAuth.current = false;
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, authLoading, navigate]);
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 

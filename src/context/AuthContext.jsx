@@ -22,6 +22,7 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const hasInitialized = useRef(false);
+  const justLoggedOut = useRef(false);
 
   useEffect(() => {
     // Get initial session only once
@@ -52,10 +53,26 @@ export const AuthProvider = ({ children }) => {
           const currentPath = location.pathname;
           
           // Only redirect if we're actually on a login/root page, not on any other route
-          if (currentPath === '/' || currentPath === '/login' || currentPath === '/authentication/sign-in/basic') {
-            const redirectPath = userRole === 'admin' ? '/dashboards/analytics' : '/dashboards/analytics';
-            console.log(`🔄 Redirecting ${userRole} to ${redirectPath}`);
-            navigate(redirectPath);
+          // Don't redirect if we're on logout route or if we just logged out
+          if ((currentPath === '/' || currentPath === '/login' || currentPath === '/authentication/sign-in/basic') && currentPath !== '/logout' && !justLoggedOut.current) {
+            // Add a small delay to ensure we're not in the middle of logout
+            setTimeout(() => {
+              if (!justLoggedOut.current && session?.user) {
+                const redirectPath = userRole === 'admin' ? '/dashboards/analytics' : '/dashboards/analytics';
+                console.log(`🔄 Redirecting ${userRole} to ${redirectPath}`);
+                navigate(redirectPath);
+              }
+            }, 500);
+          }
+        } else {
+          // No session - ensure user is redirected to login if on protected route
+          setUserRole(null);
+          setHasCheckedRole(false);
+          const currentPath = location.pathname;
+          // Don't redirect if already on authentication or logout route
+          if (currentPath && !currentPath.startsWith('/authentication') && currentPath !== '/logout') {
+            console.log('🔄 No session found, redirecting to login');
+            navigate('/authentication/sign-in/basic');
           }
         }
       });
@@ -85,8 +102,10 @@ export const AuthProvider = ({ children }) => {
         setUserRole(userRole);
         setHasCheckedRole(true);
         
-        // Only navigate on SIGNED_IN event, not on TOKEN_REFRESHED or other events
-        if (event === 'SIGNED_IN') {
+        // Only navigate on SIGNED_IN event, not on TOKEN_REFRESHED, INITIAL_SESSION, or other events
+        // This prevents auto-redirect when login page loads after logout
+        // Also don't redirect if we just logged out
+        if (event === 'SIGNED_IN' && !justLoggedOut.current) {
           // Use React Router's location.pathname which works correctly with HashRouter
           const currentPath = location.pathname;
           
@@ -97,14 +116,39 @@ export const AuthProvider = ({ children }) => {
             navigate(redirectPath);
           }
         }
+        
+        // Reset logout flag after a delay if we see a valid session
+        if (justLoggedOut.current && session?.user) {
+          // Wait a bit to ensure this is a real new login, not a cached session
+          setTimeout(() => {
+            if (session?.user) {
+              justLoggedOut.current = false;
+            }
+          }, 1000);
+        }
       } else {
         setUserRole(null);
         setHasCheckedRole(false);
         
-        // Navigate to login on sign out
+        // Navigate to login on sign out or when session becomes null
+        // But let the Logout component handle navigation if we're on /logout route
         if (event === 'SIGNED_OUT') {
-          console.log('🔄 User signed out, redirecting to /authentication/sign-in/basic');
-          navigate('/authentication/sign-in/basic');
+          // Set flag to prevent auto-redirect after logout
+          justLoggedOut.current = true;
+          // Clear the flag after 5 seconds to allow future logins
+          setTimeout(() => {
+            justLoggedOut.current = false;
+          }, 5000);
+        }
+        
+        if (event === 'SIGNED_OUT' || (!session && event !== 'INITIAL_SESSION' && !justLoggedOut.current)) {
+          const currentPath = location.pathname;
+          // Don't redirect if we're on logout route - let Logout component handle it
+          // Don't redirect if we're already on authentication page
+          if (currentPath && !currentPath.startsWith('/authentication') && currentPath !== '/logout') {
+            console.log('🔄 User signed out or session expired, redirecting to /authentication/sign-in/basic');
+            navigate('/authentication/sign-in/basic', { replace: true });
+          }
         }
       }
     });
@@ -123,7 +167,23 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signOut = async () => {
+    // Set flag before signing out to prevent redirects
+    justLoggedOut.current = true;
+    
+    // Clear localStorage before signing out
+    try {
+      localStorage.clear();
+      console.log('🧹 LocalStorage cleared on logout');
+    } catch (error) {
+      console.error('Error clearing localStorage:', error);
+    }
+    
     const { error } = await authService.signOut();
+    
+    // Clear the flag after 5 seconds to allow future logins
+    setTimeout(() => {
+      justLoggedOut.current = false;
+    }, 5000);
     return { error };
   };
 

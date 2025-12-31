@@ -129,6 +129,11 @@ export default function App() {
     return path && path.startsWith("/authentication");
   };
 
+  // Check if route is logout route (should be accessible when authenticated)
+  const isLogoutRoute = (path) => {
+    return path === "/logout";
+  };
+
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
       // Handle routes with collapse (nested routes)
@@ -145,6 +150,18 @@ export default function App() {
             exact
             path={route.route}
             element={route.component}
+              key={route.key}
+            />
+          );
+        }
+        
+        // Logout route - protected but needs special handling
+        if (isLogoutRoute(route.route)) {
+          return (
+            <Route
+              exact
+              path={route.route}
+              element={<ProtectedRoute>{route.component}</ProtectedRoute>}
               key={route.key}
             />
           );
@@ -188,11 +205,17 @@ export default function App() {
     </MDBox>
   );
 
+  // Don't show loading spinner if we're on an auth route
+  const isCurrentAuthRoute = pathname && pathname.startsWith("/authentication");
+  const isCurrentLogoutRoute = pathname === "/logout";
+  // Don't show layout on auth routes, logout route, or when not authenticated
+  const shouldShowLayout = !loading && isAuthenticated && layout === "dashboard" && !isCurrentAuthRoute && !isCurrentLogoutRoute;
+
   return direction === "rtl" ? (
     <CacheProvider value={rtlCache}>
       <ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>
         <CssBaseline />
-        {layout === "dashboard" && (
+        {shouldShowLayout && (
           <>
             <Sidenav
               color={sidenavColor}
@@ -210,29 +233,40 @@ export default function App() {
             {configsButton}
           </>
         )}
-        {layout === "vr" && <Configurator />}
-        <Routes>
-          {getRoutes(routes)}
-          <Route
-            path="*"
-            element={
-              <Navigate
-                to={
-                  isAuthenticated
-                    ? "/dashboards/analytics"
-                    : "/authentication/sign-in/basic"
-                }
-                replace
-              />
-            }
-          />
-        </Routes>
+        {layout === "vr" && isAuthenticated && <Configurator />}
+        {loading && !isCurrentAuthRoute ? (
+          <MDBox
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            minHeight="100vh"
+          >
+            Loading...
+          </MDBox>
+        ) : (
+          <Routes>
+            {getRoutes(routes)}
+            <Route
+              path="*"
+              element={
+                <Navigate
+                  to={
+                    isAuthenticated
+                      ? "/dashboards/analytics"
+                      : "/authentication/sign-in/basic"
+                  }
+                  replace
+                />
+              }
+            />
+          </Routes>
+        )}
       </ThemeProvider>
     </CacheProvider>
   ) : (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
-      {layout === "dashboard" && (
+      {shouldShowLayout && (
         <>
           <Sidenav
             color={sidenavColor}
@@ -250,23 +284,34 @@ export default function App() {
           {configsButton}
         </>
       )}
-      {layout === "vr" && <Configurator />}
-      <Routes>
-        {getRoutes(routes)}
-        <Route
-          path="*"
-          element={
-            <Navigate
-              to={
-                isAuthenticated
-                  ? "/dashboards/analytics"
-                  : "/authentication/sign-in/basic"
-              }
-              replace
-            />
-          }
-        />
-      </Routes>
+      {layout === "vr" && isAuthenticated && <Configurator />}
+      {loading && !isCurrentAuthRoute ? (
+        <MDBox
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="100vh"
+        >
+          Loading...
+        </MDBox>
+      ) : (
+        <Routes>
+          {getRoutes(routes)}
+          <Route
+            path="*"
+            element={
+              <Navigate
+                to={
+                  isAuthenticated
+                    ? "/dashboards/analytics"
+                    : "/authentication/sign-in/basic"
+                }
+                replace
+              />
+            }
+          />
+        </Routes>
+      )}
     </ThemeProvider>
   );
 }
